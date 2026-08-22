@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Things That Go | Silly Moments</title>
+  <meta name="theme-color" content="#127490" />
+  <link rel="icon" type="image/png" href="things-that-go-icon.png">
+  <link rel="apple-touch-icon" href="things-that-go-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream:#fff9f3;
+      --ink:#14323c;
+      --muted:#6b7f88;
+      --teal:#127490;
+      --teal2:#1690b4;
+      --rust:#b24627;
+      --rust2:#c95e3c;
+      --yellow:#f8b934;
+      --pink:#d94b7f;
+      --coral:#e86f5c;
+      --card:#ffffff;
+      --soft:#e4f3f7;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:'Poppins',sans-serif;min-height:100vh;padding:22px 24px 60px}
+    button{font-family:inherit}
+    .shell{max-width:960px;margin:0 auto}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+    .hub-button,.theme-back{display:inline-block;background:rgba(0,0,0,.75);color:#fff;border:0;border-radius:10px;padding:9px 12px;font-weight:600;font-size:14px;text-decoration:none;cursor:pointer}
+    .circle-mode .hub-button{display:none!important}
+    .pack-header{text-align:center;margin:8px auto 22px}
+    .pack-icon{width:150px;height:150px;object-fit:contain;border-radius:24px;display:block;margin:0 auto 8px}
+    .pack-header h1{font-family:'Baloo 2',sans-serif;color:var(--teal);font-size:2rem;margin:0}
+    .pack-header p{margin:4px auto 0;color:#4c6670;max-width:620px}
+    .screen{display:none}
+    .screen.active{display:block}
+    .menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+    .menu-card{border:0;border-radius:18px;padding:18px 16px;background:var(--teal);color:#fff;text-align:left;cursor:pointer;box-shadow:0 5px 16px rgba(0,0,0,.09);transition:.12s ease}
+    .menu-card:hover{transform:translateY(-2px);background:var(--teal2)}
+    .menu-card strong{display:block;font-size:1.08rem;margin-bottom:5px}
+    .menu-card span{font-size:.84rem;opacity:.86;line-height:1.35}
+    .game-header{text-align:center;margin:4px auto 12px}
+    .game-header h2{font-family:'Baloo 2',sans-serif;color:var(--teal);font-size:1.75rem;margin:6px 0 2px}
+    .game-header p{color:var(--muted);margin:0 auto;max-width:650px;font-size:.92rem}
+    .generator-card{max-width:860px;margin:18px auto;background:#fff;border-radius:20px;padding:18px;box-shadow:0 6px 22px rgba(0,0,0,.07)}
+    .prompt{margin:16px auto;font-size:1.2rem;line-height:1.5;padding:20px;background:#fff;border-radius:16px;border:2px dashed var(--yellow);min-height:125px;display:flex;align-items:center;justify-content:center;text-align:center}
+    .btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:11px auto}
+    .btn{background:var(--rust);color:#fff;border:0;padding:12px 18px;border-radius:28px;font-size:1rem;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+    .btn:hover{background:var(--rust2)}
+    .btn.secondary{background:#ffe9d6;color:#6b3a28}
+    .btn[disabled]{opacity:.45;cursor:not-allowed}
+    .favorites{max-width:860px;margin:22px auto 0;text-align:left}
+    .fav-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+    .fav-head h3{margin:0;color:#7a3e2e;font-size:1.05rem}
+    .fav-list{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:9px}
+    .fav-item{background:#fff;border:1px solid #ffdcbf;border-radius:13px;padding:11px 13px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .fav-item button{border:0;background:#ffe9d6;color:#6b3a28;border-radius:9px;padding:6px 9px;cursor:pointer}
+    .muted{color:var(--muted);font-size:.88rem}
+    .slot-card{max-width:860px;margin:18px auto;background:var(--yellow);border-radius:28px;padding:1.25rem;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+    .slots{display:grid;grid-template-columns:1fr;gap:.7rem}
+    .slot{background:var(--pink);color:#fff9f3;border-radius:18px;padding:1rem .8rem;min-height:72px;display:grid;place-items:center;font-size:clamp(1.15rem,6vw,2.35rem);line-height:1;font-weight:800;text-transform:uppercase;word-break:break-word;text-align:center}
+    .slot:nth-child(2){background:var(--teal)} .slot:nth-child(3){background:var(--coral)}
+    .doodle-sentence{background:rgba(255,255,255,.92);border:2px dashed #fff;border-radius:18px;margin:1rem auto 0;padding:1rem;font-size:1.1rem;font-weight:600;color:#53322b}
+    .plot-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-top:14px}
+    .plot-card{background:#fff;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.07);padding:16px}
+    .plot-card h3{color:var(--rust2);margin:0 0 8px;font-size:1rem}
+    .plot-out{background:#fff;border:2px dashed #d7e3e8;border-radius:16px;padding:14px;min-height:74px;display:flex;align-items:center;font-weight:600}
+    .rec-card{background:#fff;border-radius:18px;box-shadow:0 6px 20px rgba(0,0,0,.07);padding:16px;margin:14px 0}
+    .footer{text-align:center;color:#777;font-size:.78rem;margin-top:34px;line-height:1.5}
+    #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--teal);color:#fff;padding:9px 13px;border-radius:11px;opacity:0;pointer-events:none;transition:.2s;z-index:9999}
+    #toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+    @media(min-width:720px){.slots{grid-template-columns:1fr 1fr 1.2fr} .slot{min-height:120px}}
+    @media(min-width:860px){.plot-grid{grid-template-columns:1fr 1fr 1fr}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <a class="hub-button" href="https://miawizz.github.io/php-app-hub/">← Back to Hub</a>
+    <button class="theme-back" id="themeBack" style="display:none">← Things That Go Games</button>
+  </div>
+
+  <section id="homeScreen" class="screen active">
+    <div class="pack-header">
+      <img src="things-that-go-icon.png" alt="Things That Go theme icon" class="pack-icon">
+      <h1>THINGS THAT GO</h1>
+      <p>Choose a game and get silly with cars, trucks, planes, boats, trains, and more.</p>
+    </div>
+    <div class="menu-grid">
+      <button class="menu-card" data-screen="youare"><strong>You Are...</strong><span>Ridiculous physical acting prompts.</span></button>
+      <button class="menu-card" data-screen="sounds"><strong>Who Can Sound Like...</strong><span>Silly sound prompts.</span></button>
+      <button class="menu-card" data-screen="faces"><strong>Make This Face</strong><span>Facial expression prompts.</span></button>
+      <button class="menu-card" data-screen="wyr"><strong>Would You Rather</strong><span>Choose between two imaginary dilemmas.</span></button>
+      <button class="menu-card" data-screen="plot"><strong>Plot Twist</strong><span>Build a silly story together and record it as you go.</span></button>
+      <button class="menu-card" data-screen="doodle"><strong>What Should We Doodle?</strong><span>Shuffle up a werid drawing prompt.</span></button>
+    </div>
+  </section>
+
+  <section id="youareScreen" class="screen">
+    <div class="game-header"><h2>Things That Go You Are...</h2><p>Tap for a random prompt and act it out.</p></div>
+    <div class="generator-card" data-simple-game="youare"></div>
+  </section>
+
+  <section id="soundsScreen" class="screen">
+    <div class="game-header"><h2>Things That Go Who Can Sound Like...</h2><p>Use your voice to make the sound.</p></div>
+    <div class="generator-card" data-simple-game="sounds"></div>
+  </section>
+
+  <section id="facesScreen" class="screen">
+    <div class="game-header"><h2>Things That Go Make This Face</h2><p>Read the situation and make the face - try to freeze like a snapshot!</p></div>
+    <div class="generator-card" data-simple-game="faces"></div>
+  </section>
+
+  <section id="wyrScreen" class="screen">
+    <div class="game-header"><h2>Things That Go Would You Rather</h2><p>Pick one and explain your choice!</p></div>
+    <div class="generator-card" data-simple-game="wyr"></div>
+  </section>
+
+  <section id="plotScreen" class="screen">
+    <div class="game-header"><h2>Things That Go Plot Twist</h2><p>Start with a title, "Once upon a time," tell the story together, then tap for a random plot twist whenever you need one.</p></div>
+    <div class="rec-card">
+      <h3 style="margin-top:0;color:var(--rust2)">Record Your Story</h3>
+      <div class="plot-out" id="recStatus">Ready to record. Your audio stays on your device.</div>
+      <div class="btns">
+        <button class="btn" id="recStart">Start recording</button>
+        <button class="btn secondary" id="recPause" disabled>Pause</button>
+        <button class="btn secondary" id="recStop" disabled>Stop</button>
+        <button class="btn secondary" id="recPlay" disabled>Play</button>
+        <button class="btn secondary" id="recDownload" disabled>Download</button>
+      </div>
+      <audio id="player" controls style="width:100%;margin-top:8px;display:none"></audio>
+    </div>
+    <div class="plot-grid">
+      <div class="plot-card">
+        <h3>STORY TITLE...</h3>
+        <div class="plot-out" id="titleOut">Tap below to get a title</div>
+        <div class="btns"><button class="btn" id="titleNext">GET A TITLE!</button><button class="btn secondary" id="titleBack">Back</button><button class="btn secondary" id="titleFwd">Forward</button></div>
+      </div>
+      <div class="plot-card">
+        <h3>READY FOR A PLOT TWIST...?</h3>
+        <div class="plot-out" id="twistOut">Tap below for a new idea</div>
+        <div class="btns"><button class="btn" id="twistNext">PLOT TWIST!</button><button class="btn secondary" id="twistBack">Back</button><button class="btn secondary" id="twistFwd">Forward</button></div>
+      </div>
+      <div class="plot-card">
+        <h3>READY TO WRAP IT UP...?</h3>
+        <div class="plot-out" id="wrapOut">Tap below for an ending idea</div>
+        <div class="btns"><button class="btn secondary" id="wrapNext">IDEAS FOR HOW TO END...</button><button class="btn secondary" id="wrapBack">Back</button><button class="btn secondary" id="wrapFwd">Forward</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="doodleScreen" class="screen">
+    <div class="game-header"><h2>Things That Go What Should We Doodle?</h2><p>Shuffle an adjective, subject, and action into one ridiculous drawing prompt that you can either draw separately or work on together!</p></div>
+    <div class="slot-card">
+      <div class="slots"><div class="slot" id="slotAdj">WHAT</div><div class="slot" id="slotSubject">SHOULD</div><div class="slot" id="slotAction">WE DOODLE?</div></div>
+      <div class="doodle-sentence" id="doodlePrompt">Tap the button below to shuffle up a Things That Go drawing prompt!</div>
+      <div class="btns"><button class="btn" id="doodleNext">What should we doodle?</button></div>
+      <div class="btns"><button class="btn secondary" id="doodleBack">Back</button><button class="btn secondary" id="doodleFwd">Forward</button></div>
+      <div class="btns"><button class="btn secondary" id="doodleSave">Save to Favorites</button></div>
+    </div>
+    <div class="favorites">
+      <div class="fav-head"><h3>Doodle Favorites</h3><div><button class="btn secondary" id="doodleCopy">Copy All</button> <button class="btn secondary" id="doodleClear">Clear</button></div></div>
+      <p class="muted" id="doodleEmpty">No favorites yet.</p><ul class="fav-list" id="doodleFavList"></ul>
+    </div>
+  </section>
+
+  <p class="footer">© 2026 Mia Wisinski, Playful Heart Parenting. For personal use only by purchasers. Please do not share without permission.</p>
+</div>
+<div id="toast"></div>
+
+<script>
+const DATA = {
+  youare: [
+  "You are a race car going so fast that your tires are starting to catch fire!",
+  "You are a ginormous monster truck trying to parallel park in a teeny-tiny parking space!",
+  "You are a fire truck trying to get through a car wash but you forgot to put down your top ladder",
+  "You are a garbage truck getting super grossed out because the trash you just picked up is SO stinky!",
+  "You are a school bus trying to squeeze through a drive-thru to order 55 cheeseburgers for all the kids.",
+  "You are a bus driving through a gigantic puddle of mud and it splatters all over you",
+  "You are a dump truck unloading a huge pile of dirt into a hole but it’s your first day on the job and you’re a little nervous…",
+  "You are a cement mixer showing off how fast you can spin the cement around and around in your giant mixing drum.",
+  "You are an excavator trying to use your giant bucket to eat a bowl of cereal because it’s been a long day on the job and you’re getting hangry.",
+  "You are a bulldozer trying to gently push a giant pile of marshmallows across town without squishing them because you’re on your way to make 5 million s’mores.",
+  "You are a crane who’s scared of heights and it’s your first day on the job.",
+  "You are a tractor who’s pulling a bunch of hay but you’re allergic to hay and it’s making you sneeze!",
+  "You’re a tractor that accidentally just spilled a bunch of loose grass all over the place and you’re super embarrassed.",
+  "You are a little tow truck trying to tow a giant monster truck!",
+  "You are a delivery truck trying to deliver a package to the very top of a giant, steep hill!",
+  "You are an ice cream truck driving down the street and a bunch of kids are chasing after you, but you’re scared of kids!",
+  "You are a food truck that’s super hungry and you’re trying to eat all the food before the customers buy it…",
+  "You are a super old motorcycle that is trying to go fast but you keep falling asleep!",
+  "You are a bicycle climbing up a really steep hill and then zooming down the other side.",
+  "You are a scooter going super fast then getting stuck in bubble gum…",
+  "You are a skateboard whose wheels are different sizes so you’re super wobbly",
+  "You are wearing roller skates for the first time and don’t know how to stop and you crash into a pile of dirt.",
+  "You are the caboose on the train that keeps falling asleep and gets startled when the train takes off again.",
+  "You are an airplane who thinks clouds are made out of cotton candy so you try to eat them every time you fly through them!",
+  "You are a helicopter who’s trying to use your propeller to mix a giant batch of birthday cake batter and it’s splattering all over the place.",
+  "You are a hot-air balloon that accidentally floated right through a bunch of really cranky geese and they’re all pecking at you and honking angrily at you.",
+  "You are a boat getting tossed and turned by the waves on a stormy day at sea.",
+  "You are a sailboat on a day when the wind keeps changing directions every two seconds and you can’t tell which way you’re going…",
+  "You are a submarine who comes face to face with a great white shark!",
+  "You are a cruise ship and all the passengers are having a dance party at midnight and it’s waking you up from your beauty sleep!",
+  "You are trying to ride a jet ski through a very thick, mucky swamp",
+  "You are a snowmobile plowing snow in the biggest blizzard in history and you can barely keep up with all the snow around you!",
+  "You are a Zamboni smoothing the ice on an ice rink but you’re trying to show off because you secretly wish YOU were an ice skater!",
+  "You are a golf cart who’s sneaking on to the golf course after it’s closed to play golf yourself because YOU deserve to have fun too!",
+  "You are a fancy limo stuck in stop-and-go traffic",
+  "You are a tow truck who hasn’t had a job in five years and it’s finally your time to shine because a broken down van needs to be towed to the shop!",
+  "You are an RV driving to find your campsite at night but you’re scared of the dark!",
+  "You are a school bus and all the kids on the bus are jumping up and down and it’s making you bounce around while you try to drive down the street.",
+  "You are a forklift trying to pick up a stack of 100 boxes of very fragile coffee mugs and you’re trying so hard to be careful you don’t drop them!",
+  "You are a unicycle and the person who is riding you has never ridden a unicycle before and they can’t quite find their balance…",
+  "You are a fire truck trying to use your giant hose to fill up a bunch of water balloons for the annual water balloon fight at the fire station.",
+  "You are a toy car who has been played with so much that its wheel falls off!",
+  "You are an airplane coming in for a landing on a very windy day.",
+  "You are a car driving down the street minding your own business when POP you get a flat tire!",
+  "You are a super hungry truck that is finally getting filled up with gas at the gas station!",
+  "You are the windows in a car getting rolled up and down every two seconds.",
+  "You are the windshield wipers on a car in a crazy rainstorm.",
+  "You are a car that just got a brand new set of tires and you’re showing off for all the other cars in your neighborhood to see.",
+  "You are a giant monster truck performing in a monster truck show for the first time and you’re trying to look tough even though you’re a little nervous.",
+  "You are a scooter riding down a super bumpy road."
+],
+  sounds: [
+  "A race car revving its engine at the starting line, trying to sound tough in front of the audience",
+  "A grumpy garbage truck backing up VERY slowly because there’s a squirrel behind it that refuses to move",
+  "A fire truck trying to use its siren but it has the hiccups",
+  "A monster truck running over a nail and getting a flat tire",
+  "A car trying to start but the battery is dead and it’s super cranky about it",
+  "A school bus whose horn is trying to honk the “Wheels on the Bus” song",
+  "A mouse squeaking for joy while he rides on a motorcycle",
+  "A chicken trying to ride a unicycle",
+  "A train pulling the heaviest load it has EVER carried up a giant hill",
+  "A train sneezing and instead of Ah-Choo it keeps saying Ah-Choo-Choo",
+  "A grumpy grandma whose wig just got blown off by a helicopter flying overhead",
+  "An airplane taking off for the first time and it’s so excited to fly",
+  "A sailboat giggling because a bunch of little fish are tickling it from underneath",
+  "A cruise ship blowing its enormous horn to say goodbye to its best friend cruise ships as it leaves the dock",
+  "A monster truck honking and accidentally startling itself because it didn’t realize how loud it could honk!",
+  "An excavator who was digging and then just discovered a long lost buried treasure chest filled with gold!",
+  "A dump truck that was carrying a super heavy load and finally dumped it and feels so much better.",
+  "A mommy bus honking a lullaby to her baby bus.",
+  "A limo full of ducks stuck in traffic and all the ducks are getting impatient",
+  "A cow riding in a trailer mooing for joy because it’s never gone this fast in its life"
+],
+  faces: [
+  "You just looked out the window and saw a GIGANTIC monster truck parked in your driveway!",
+  "You’re an 85-year old grandma riding a roller coaster and LOVING it.",
+  "Your favorite ice cream truck just drove up and they said, “Our ice cream is melting and we need someone to eat it for free!!”",
+  "You accidentally fell asleep in a hot air balloon and just woke up and realized you’re way up high in the sky.",
+  "You’re on an airplane and look over at the seat next to you and see a giant actual pig buckled in and it just oinked at you.",
+  "You were just riding in a convertible car with the roof down and you accidentally swallowed a bug.",
+  "The garbage truck just drove by you and it’s the worst smell in the history of all smells.",
+  "You’re a limo that just went through the car wash and you’re feeling beautiful.",
+  "You just looked up and saw a blimp with a giant picture of YOUR face on it…",
+  "You’re on a sailboat and a giant whale just swam under you…",
+  "You just watched a cement mixer pour cement onto the sidewalk and you heard the cement screaming, “Hellllp! I don’t wanna dry out in the sun!!!”",
+  "You just saw an elephant get out of a tiny car.",
+  "You just found out your new family car is a giant pink limo with a hot tub in the back!",
+  "You just won the world’s biggest unicycle race and you won a lifetime supply of chocolate.",
+  "You are on an airplane and you look out the window and see a goose flying next to you holding a sign in its beak that says, “I’m gonna win!!”",
+  "You just saw a baby driving a pickup truck… and when you looked at them they shouted, “Goo goo GA GA” and honked their horn at you…",
+  "You just watched a dump truck dump an entire mountain of rubber ducks into your driveway that you did NOT order.",
+  "You just got out of the car after a five hour road trip and realized you were sitting on slime the whole time.",
+  "A car just zoomed through a rain puddle and it splashed ALL over you!",
+  "You just took a bite of your friend’s construction truck-themed birthday cake and it’s the best thing you’ve ever tasted in your whole life.",
+  "You just burped and it sounded EXACTLY like a bus honking its horn and startled everyone, including you.",
+  "You JUST learned how to ride your bike without training wheels!",
+  "You just got your toe run over by a baby on a scooter.",
+  "You just woke up from the weirdest dream about a bunch of chickens driving a bus and you’re really confused.",
+  "You are on a plane and you just flew straight THROUGH a rainbow!"
+],
+  wyr: [
+  "Would you rather have to ride a giant monster truck everywhere you go or ride in a hot air balloon everywhere you go?",
+  "Would you rather have your yawn sound exactly like a fire truck siren or your burps sound exactly like a train whistle going CHOO-CHOO?",
+  "Would you rather have your own personal ice cream truck with free ice cream and popsicles whenever you want or your own personal food truck with whatever meal you want whenever you want it?",
+  "Would you rather be able to fly like an airplane or travel deep down into the ocean like a submarine?",
+  "Would you rather be able to run as fast as a race car or be able to swim as fast as a speedboat?",
+  "Would you rather drive a monster truck with teeny-tiny baby wheels or a golf cart with ENORMOUS monster-truck tires?",
+  "Would you rather have to ride in a limo filled with chickens who won’t stop pecking you or a school bus filled with goats who are trying to eat your clothes?",
+  "Would you rather be able to magically make your toy car into a real, life-sized car or shrink yourself down small enough to drive your toy car around your house?",
+  "Would you rather have to ride in the back of a garbage truck with all the stinky garbage or sit inside a cement mixer while it spins around and around (and it’s filled with rotten bananas instead of cement)?",
+  "Would you rather have to communicate for a whole day by honking like a car or by going “Vroom vroom” in different ways to try to express what you’re trying to say?",
+  "Would you rather have a small excavator bucket instead of one hand or roller skates on just one of your feet?",
+  "Would you rather inflate like a blimp for 5 minutes every time you sneeze or sneeze for five minutes every time you see a blimp in the sky?",
+  "Would you rather have to ride in a car that looks like a giant hot dog or a car that looks like a giant donut?",
+  "Would you rather have built in retractable wheels on your feet or built in headlights in your forehead that you can use to see in the dark?",
+  "Would you rather have your car change colors every day and you never know what color it’s gonna be or it changes smells every time you get in it and it usually smells like some kind of food or treat but SOMETIMES it smells like a rotten egg?",
+  "Would you rather always have to listen to the same song on repeat forever any time you ever ride in the car or always have to listen to a different new song forever and not be able to hear the same song more than once in the car?",
+  "Would you rather have a car horn that honks the song “Head, Shoulders, Knees, and Toes” or a car horn that sounds like a screaming goat?",
+  "Would you rather have a car that can fly (but only 20 feet high and it goes pretty slow) or a car that can shrink down and squeeze through traffic without anyone noticing?",
+  "Would you rather have to change your name to “Monster Truck [your last name]” or to “Minivan [your last name]”?",
+  "Would you rather have your shoes make honking sounds every time you take a step or sound like you’re revving an engine every time you get up off the couch or stand up from sitting?",
+  "Would you rather have to ride a blimp everywhere you go or a unicycle?",
+  "Would you rather have a retractable propeller that can come out the top of your head and let you lift up like a helicopter or retractable airplane wings that pop out of your arms and let you zoom through the sky?",
+  "Would you rather have to get around everywhere by riding a tricycle that’s way too small for you or by sitting on a skateboard that’s being pulled by a Great Dane?",
+  "Would you rather have to say, “Toot-toot!” or “Beep-beep!” every time you enter a room?",
+  "Would you rather have a roller coaster that goes through your house or a little train that takes you from room to room?",
+  "Would you rather have your room decorated with stickers of garbage trucks but they’re cool-looking garbage trucks or stickers of cars but they’re rusty old cars with dents in them?",
+  "Would you rather sound like a plane taking off every time you run or naturally make a beeping sound every time you walk backwards, like when a truck is backing up?",
+  "Would you rather live in the middle of a lake and you have to take a speedboat any time you want to go anywhere or live at the top of a really big hill and you have to ride a helicopter to get down and go into town?",
+  "Would you rather have to change your name to “Honk [your last name]” or “Vroom [your last name]”?",
+  "Would you rather have a little traffic light that floats over your head and turns red when you stop, green when you’re moving fast, and yellow when you’re moving slow or have blinkers on your shoulder that give turn signals, light up, and make a clicking noise whenever you’re turning right or left?",
+  "Would you rather have to wear giant glasses every day that have squeaky windshield wipers built in or wear a seatbelt just as part of your everyday outfit?",
+  "Would you rather have your nose be shaped exactly like a limousine or exactly like a monster truck?"
+],
+  titles: [
+  "Carl The Car Who Was Scared of His Own Horn",
+  "Monica, the Glamorous Monster Truck",
+  "The Stinkiest Bus on the Block",
+  "Benny and his magical Bicycle",
+  "The World's Strangest Road Trip",
+  "Trixie The Truck Who Wanted to be a professional breakdancer",
+  "Bertha the Sleepy Blimp",
+  "The Slowest Race Car Ever",
+  "The Mystery of the Missing Car Keys",
+  "Duke, the Dog Who Wanted to be a Race Car driver",
+  "The Airplane That Was scared of heights",
+  "The Magical Train Ride",
+  "The Legend of the Invisible Blimp",
+  "Roland The Lonely Roller Skate",
+  "Tootie the Truck Who Started a Rock Band",
+  "Four Pigs, a Sailboat, and a Dream",
+  "Stinky the Skunk and her one of a kind Stink-mobile"
+],
+  twists: [
+  "Just then, a very large pigeon swooped down and tried to snatch their favorite toy car!",
+  "Suddenly a car alarm started going off and they realized the squirrel thieves down the street were at it again…",
+  "Suddenly a mysterious giggle started getting louder and louder and they noticed a mischievous toddler riding a tricycle",
+  "Just then they heard a loud, “HONK!” and noticed a monster truck was parked outside and the driver was waving enthusiastically",
+  "Suddenly the song “Wheels on the Bus” started blasting out of nowhere… who was playing it?",
+  "Suddenly there was this funny feeling that someone was watching… sure enough there was a little kid on a scooter standing nearby who seemed to be judging them…",
+  "Just then they heard a loud “WAAAA!” and noticed a baby had accidentally ripped the wheel off its favorite toy car",
+  "Just then they heard a “Vroom! Vroom!” and noticed a turtle in a helmet on a motorcycle who glared at them and said, “Who thinks they can beat ME in a race?”",
+  "Suddenly, a giant hot air balloon appeared in the sky and a very cheerful opera singer started serenading them with… was it a singing telegram?",
+  "Suddenly the smell of pizza filled the air and 25 pizza delivery trucks pulled up all at once…",
+  "Suddenly the ground started to rumble and 10 monster trucks pulled up… they looked angry…",
+  "Just then a donkey zoomed up on a scooter and said, “Hee-haw! Hop on! No time to explain! You just have to trust me!”",
+  "“Excuse me,” said a shy voice from out of nowhere, “Have you seen my car keys anywhere??”",
+  "Just then they heard a “beep! beep!” sound and noticed construction trucks were working on something across the street… what were they building?",
+  "Suddenly a blimp floated overhead with the words, “Warning… you are in great danger!”",
+  "Just then a loud honk echoed through the air and a mouse driving a toy monster truck rolled up, looking very hungry.",
+  "“Wanna play with me?” said a voice from out of nowhere, and they looked over to see a cute baby holding two toy fire trucks.",
+  "Just then they heard a loud crash and realized the next door neighbors had roller skated right into their garbage cans… AGAIN.",
+  "Just then, a nice old man wandered over and said, “Excuse me, but I just found this on the ground, is this yours?” and it was their long lost favorite toy car!",
+  "Suddenly they heard a loud, “BAWK!” and an angry chicken on roller skates was heading straight towards them…",
+  "Suddenly a voice screamed, “Help! I don’t know how to stop this thing!!” and they saw their neighbor zooming by on a unicycle…",
+  "Suddenly a lonnnng limo pulled up and out stepped someone they ALL recognized immediately…",
+  "“Uh oh” said a small voice in the corner. It was a mischievous baby who had just dropped her parents’ car keys in the toilet.",
+  "Just then they noticed a plane was writing something in the sky… it was something that started with the letter H… but they couldn’t quite tell what it said…",
+  "Suddenly a large bus zoomed by, driving straight through a muddy puddle, splashing mud all over them!",
+  "Just then an ice cream truck started driving by, blasting its music, but it wouldn’t stop for anyone!"
+],
+  wraps: [
+  "End the story with something happy",
+  "Finish by solving the main problem",
+  "Have the characters feel safe again",
+  "Let everyone get what they were hoping for",
+  "Show how things have changed since the beginning",
+  "End with the characters making a plan for next time",
+  "Wrap it up with a feeling — excitement, relief, joy, or calm",
+  "Leave the story open so it could continue later",
+  "End in the same place or situation where it began",
+  "Give the final line to the main character"
+],
+  adjectives: [
+  "speedy",
+  "sleepy",
+  "wobbly",
+  "fancy",
+  "stinky",
+  "teeny-tiny",
+  "gigantic",
+  "sparkly",
+  "muddy",
+  "grumpy",
+  "rainbow",
+  "confused",
+  "sneaky",
+  "fluffy",
+  "polka-dotted",
+  "rusty",
+  "magical",
+  "hairy",
+  "royal",
+  "clumsy",
+  "nervous",
+  "extremely fancy",
+  "super-stretchy",
+  "googly-eyed",
+  "banana-shaped"
+],
+  subjects: [
+  "race car",
+  "monster truck",
+  "fire truck",
+  "garbage truck",
+  "school bus",
+  "cement mixer",
+  "dump truck",
+  "excavator",
+  "bulldozer",
+  "tractor",
+  "ice cream truck",
+  "motorcycle",
+  "bicycle",
+  "roller skate",
+  "train",
+  "airplane",
+  "helicopter",
+  "hot-air balloon",
+  "blimp",
+  "rocket ship",
+  "sailboat",
+  "submarine",
+  "cruise ship",
+  "Zamboni",
+  "limo"
+],
+  actions: [
+  "eating spaghetti",
+  "brushing its teeth",
+  "jumping on a trampoline",
+  "taking a bubble bath",
+  "baking a birthday cake",
+  "walking a tiny dog",
+  "doing ballet",
+  "playing basketball",
+  "blowing bubbles",
+  "having a tea party",
+  "playing the drums",
+  "taking a selfie",
+  "getting a haircut",
+  "licking an ice cream cone",
+  "having a dance party",
+  "playing hide-and-seek",
+  "eating an enormous taco",
+  "doing yoga",
+  "building a sandcastle",
+  "jumping on a pogo stick",
+  "playing the piano",
+  "wearing pajamas",
+  "having a pillow fight",
+  "making pancakes",
+  "playing video games",
+  "having a picnic",
+  "singing karaoke",
+  "hula hooping",
+  "going down a playground slide",
+  "making a giant pizza",
+  "riding a bicycle",
+  "having a water balloon fight",
+  "playing mini golf",
+  "folding laundry",
+  "shopping for groceries",
+  "painting a picture",
+  "building a couch-cushion fort",
+  "having a staring contest",
+  "walking on a tightrope",
+  "juggling bananas",
+  "trying to do a cartwheel",
+  "blowing out birthday candles",
+  "trying to squeeze into a tiny pair of pants",
+  "playing in a marching band",
+  "playing with slime",
+  "having a snowball fight",
+  "trying to catch a butterfly",
+  "eating a giant bowl of cereal",
+  "reading a bedtime story",
+  "trying to put on roller skates"
+]
+};
+
+const NS = "things-that-go-pack";
+const screens = document.querySelectorAll(".screen");
+const themeBack = document.getElementById("themeBack");
+
+function showScreen(name) {
+  screens.forEach(s => s.classList.remove("active"));
+  const target = document.getElementById(name + "Screen");
+  if (target) target.classList.add("active");
+  themeBack.style.display = name === "home" ? "none" : "inline-block";
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("[data-screen]").forEach(btn => btn.addEventListener("click", () => showScreen(btn.dataset.screen)));
+themeBack.addEventListener("click", () => showScreen("home"));
+
+if (new URLSearchParams(location.search).get("circle") === "1") document.body.classList.add("circle-mode");
+
+function shuffle(a) {
+  for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function toast(msg) {
+  const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show");
+  clearTimeout(window.__toastTimer); window.__toastTimer=setTimeout(()=>el.classList.remove("show"),1200);
+}
+function makeDeck(key, items) {
+  const base = `${NS}_${key}`;
+  const version = JSON.stringify(items).length + ":" + items.length;
+  const load = (k,f) => { try { return JSON.parse(localStorage.getItem(base+"_"+k)) ?? f; } catch { return f; } };
+  let order=load("order",null), idx=Number(localStorage.getItem(base+"_idx")||0), hist=load("hist",[]), pos=Number(localStorage.getItem(base+"_pos")||0);
+  if (localStorage.getItem(base+"_ver") !== version || !Array.isArray(order) || order.length!==items.length) {
+    order=shuffle([...Array(items.length).keys()]); idx=0; hist=[]; pos=0;
+  }
+  function save() {
+    localStorage.setItem(base+"_ver",version); localStorage.setItem(base+"_order",JSON.stringify(order));
+    localStorage.setItem(base+"_idx",String(idx)); localStorage.setItem(base+"_hist",JSON.stringify(hist)); localStorage.setItem(base+"_pos",String(pos));
+  }
+  function next() {
+    if (pos<hist.length) hist.splice(pos);
+    let pick=order[idx++]; 
+    if (idx>=order.length) { const avoid=pick; order=shuffle([...Array(items.length).keys()]); if(items.length>1 && order[0]===avoid) [order[0],order[1]]=[order[1],order[0]]; idx=0; }
+    hist.push(pick); if(hist.length>500) hist.shift(); pos=hist.length; save(); return pick;
+  }
+  function back() { if(pos<=1)return null; pos--; save(); return hist[pos-1]; }
+  function fwd() { if(pos>=hist.length)return null; const i=hist[pos]; pos++; save(); return i; }
+  function current() { return pos>0 && hist.length ? hist[pos-1] : null; }
+  function canBack() { return pos>1; } function canFwd() { return pos<hist.length; }
+  save(); return {items,next,back,fwd,current,canBack,canFwd};
+}
+
+function setupSimpleGame(key, buttonText) {
+  const root=document.querySelector(`[data-simple-game="${key}"]`);
+  const deck=makeDeck(key, DATA[key]);
+  root.innerHTML = `
+    <div class="btns"><button class="btn next">${buttonText}</button></div>
+    <div class="btns"><button class="btn secondary back">Back</button><button class="btn secondary fwd">Forward</button></div>
+    <div class="btns"><button class="btn secondary save">Save to Favorites</button></div>
+    <div class="prompt">Tap the button to get a Things That Go prompt!</div>
+    <div class="favorites">
+      <div class="fav-head"><h3>Favorites</h3><div><button class="btn secondary copy">Copy All</button> <button class="btn secondary clear">Clear</button></div></div>
+      <p class="muted empty">No favorites yet. Save any you love.</p><ul class="fav-list"></ul>
+    </div>`;
+  const p=root.querySelector(".prompt"), back=root.querySelector(".back"), fwd=root.querySelector(".fwd"), save=root.querySelector(".save"), list=root.querySelector(".fav-list"), empty=root.querySelector(".empty");
+  const favKey=`${NS}_${key}_favs`;
+  let favs=[]; try{favs=JSON.parse(localStorage.getItem(favKey)||"[]")}catch{}
+  function update() {
+    back.disabled=!deck.canBack(); fwd.disabled=!deck.canFwd();
+    const i=deck.current(); save.disabled=i==null; save.textContent=(i!=null && favs.includes(i))?"Saved":"Save to Favorites";
+  }
+  function renderFavs() {
+    list.innerHTML=""; empty.style.display=favs.length?"none":"block";
+    favs.forEach(i=>{const li=document.createElement("li");li.className="fav-item";const t=document.createElement("div");t.textContent=DATA[key][i];const b=document.createElement("button");b.textContent="Remove";b.onclick=()=>{favs=favs.filter(x=>x!==i);localStorage.setItem(favKey,JSON.stringify(favs));renderFavs();update();};li.append(t,b);list.appendChild(li);});
+  }
+  root.querySelector(".next").onclick=()=>{p.textContent="Here you go...!";setTimeout(()=>{const i=deck.next();p.textContent=DATA[key][i];update();},180)};
+  back.onclick=()=>{const i=deck.back();if(i!=null)p.textContent=DATA[key][i];update();};
+  fwd.onclick=()=>{const i=deck.fwd();if(i!=null)p.textContent=DATA[key][i];update();};
+  save.onclick=()=>{const i=deck.current();if(i==null)return;if(!favs.includes(i)){favs.push(i);localStorage.setItem(favKey,JSON.stringify(favs));renderFavs();toast("Saved to favorites");}update();};
+  root.querySelector(".copy").onclick=()=>{if(!favs.length)return toast("No favorites to copy");navigator.clipboard.writeText(favs.map(i=>DATA[key][i]).join("\n"));toast("Favorites copied");};
+  root.querySelector(".clear").onclick=()=>{favs=[];localStorage.setItem(favKey,"[]");renderFavs();update();toast("Favorites cleared");};
+  const i=deck.current(); if(i!=null)p.textContent=DATA[key][i]; renderFavs(); update();
+}
+
+setupSimpleGame("youare","You are...");
+setupSimpleGame("sounds","Who can sound like...");
+setupSimpleGame("faces","Make this face");
+setupSimpleGame("wyr","Would you rather...");
+
+function wirePlot(prefix, items, outId, nextId, backId, fwdId) {
+  const deck=makeDeck("plot_"+prefix,items), out=document.getElementById(outId), next=document.getElementById(nextId), back=document.getElementById(backId), fwd=document.getElementById(fwdId);
+  function update(){back.disabled=!deck.canBack();fwd.disabled=!deck.canFwd();}
+  next.onclick=()=>{const i=deck.next();out.textContent=items[i];update();};
+  back.onclick=()=>{const i=deck.back();if(i!=null)out.textContent=items[i];update();};
+  fwd.onclick=()=>{const i=deck.fwd();if(i!=null)out.textContent=items[i];update();};
+  const i=deck.current(); if(i!=null)out.textContent=items[i]; update();
+}
+wirePlot("title",DATA.titles,"titleOut","titleNext","titleBack","titleFwd");
+wirePlot("twist",DATA.twists,"twistOut","twistNext","twistBack","twistFwd");
+wirePlot("wrap",DATA.wraps,"wrapOut","wrapNext","wrapBack","wrapFwd");
+
+const doodleKey=`${NS}_doodle`;
+let doodleHist=[]; try{doodleHist=JSON.parse(localStorage.getItem(doodleKey+"_hist")||"[]")}catch{}
+let doodlePos=Number(localStorage.getItem(doodleKey+"_pos")||doodleHist.length);
+let doodleFavs=[]; try{doodleFavs=JSON.parse(localStorage.getItem(doodleKey+"_favs")||"[]")}catch{}
+const $=id=>document.getElementById(id);
+function rand(a){return a[Math.floor(Math.random()*a.length)]}
+function makeDoodle(){return{adjective:rand(DATA.adjectives),subject:rand(DATA.subjects),action:rand(DATA.actions)}}
+function doodleText(p){return p.adjective.charAt(0).toUpperCase()+p.adjective.slice(1)+" "+p.subject+" "+p.action}
+function showDoodle(p){$("slotAdj").textContent=p.adjective;$("slotSubject").textContent=p.subject;$("slotAction").textContent=p.action;$("doodlePrompt").textContent=doodleText(p)}
+function saveDoodleState(){localStorage.setItem(doodleKey+"_hist",JSON.stringify(doodleHist));localStorage.setItem(doodleKey+"_pos",String(doodlePos));}
+function currentDoodle(){return doodlePos>0?doodleHist[doodlePos-1]:null}
+function sameDoodle(a,b){return a&&b&&a.adjective===b.adjective&&a.subject===b.subject&&a.action===b.action}
+function updateDoodle(){
+  $("doodleBack").disabled=doodlePos<=1;$("doodleFwd").disabled=doodlePos>=doodleHist.length;
+  const p=currentDoodle();$("doodleSave").disabled=!p;$("doodleSave").textContent=p&&doodleFavs.some(f=>sameDoodle(f,p))?"Saved":"Save to Favorites";
+}
+function renderDoodleFavs(){
+  const list=$("doodleFavList");list.innerHTML="";$("doodleEmpty").style.display=doodleFavs.length?"none":"block";
+  doodleFavs.forEach((p,i)=>{const li=document.createElement("li");li.className="fav-item";const t=document.createElement("div");t.textContent=doodleText(p);const b=document.createElement("button");b.textContent="Remove";b.onclick=()=>{doodleFavs.splice(i,1);localStorage.setItem(doodleKey+"_favs",JSON.stringify(doodleFavs));renderDoodleFavs();updateDoodle();};li.append(t,b);list.appendChild(li);});
+}
+$("doodleNext").onclick=()=>{if(doodlePos<doodleHist.length)doodleHist.splice(doodlePos);const p=makeDoodle();doodleHist.push(p);if(doodleHist.length>500)doodleHist.shift();doodlePos=doodleHist.length;let c=0;const int=setInterval(()=>{$("slotAdj").textContent=rand(DATA.adjectives);$("slotSubject").textContent=rand(DATA.subjects);$("slotAction").textContent=rand(DATA.actions);if(++c>=9){clearInterval(int);showDoodle(p)}},65);saveDoodleState();updateDoodle();};
+$("doodleBack").onclick=()=>{if(doodlePos>1){doodlePos--;showDoodle(currentDoodle());saveDoodleState();updateDoodle();}};
+$("doodleFwd").onclick=()=>{if(doodlePos<doodleHist.length){doodlePos++;showDoodle(currentDoodle());saveDoodleState();updateDoodle();}};
+$("doodleSave").onclick=()=>{const p=currentDoodle();if(p&&!doodleFavs.some(f=>sameDoodle(f,p))){doodleFavs.push(p);localStorage.setItem(doodleKey+"_favs",JSON.stringify(doodleFavs));renderDoodleFavs();toast("Saved to favorites");}updateDoodle();};
+$("doodleCopy").onclick=()=>{if(!doodleFavs.length)return toast("No favorites to copy");navigator.clipboard.writeText(doodleFavs.map(doodleText).join("\n"));toast("Favorites copied");};
+$("doodleClear").onclick=()=>{doodleFavs=[];localStorage.setItem(doodleKey+"_favs","[]");renderDoodleFavs();updateDoodle();toast("Favorites cleared");};
+if(doodleHist.length){doodlePos=doodleHist.length;showDoodle(currentDoodle())} renderDoodleFavs();updateDoodle();
+
+let mediaRecorder=null, mediaStream=null, chunks=[], blobUrl=null;
+const recStart=$("recStart"),recPause=$("recPause"),recStop=$("recStop"),recPlay=$("recPlay"),recDownload=$("recDownload"),recStatus=$("recStatus"),player=$("player");
+const canPause=!!(window.MediaRecorder&&MediaRecorder.prototype&&typeof MediaRecorder.prototype.pause==="function");
+if(!canPause)recPause.style.display="none";
+function pickMime(){for(const t of ["audio/mp4;codecs=aac","audio/mp4","audio/webm;codecs=opus","audio/webm"])if(window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(t))return t;return""}
+function ext(m){m=(m||"").toLowerCase();return m.includes("mp4")?"m4a":m.includes("webm")?"webm":"audio"}
+recStart.onclick=async()=>{recStart.disabled=true;try{mediaStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});const mime=pickMime();mediaRecorder=new MediaRecorder(mediaStream,mime?{mimeType:mime}:undefined);chunks=[];mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};mediaRecorder.onstart=()=>recStatus.textContent="Recording…";mediaRecorder.onpause=()=>recStatus.textContent="Paused";mediaRecorder.onresume=()=>recStatus.textContent="Recording…";mediaRecorder.onstop=()=>{const type=mediaRecorder.mimeType||mime||"audio/webm";const blob=new Blob(chunks,{type});if(blobUrl)URL.revokeObjectURL(blobUrl);blobUrl=URL.createObjectURL(blob);player.src=blobUrl;player.style.display="block";recPlay.disabled=false;recDownload.disabled=false;recStatus.textContent="Recording ready to play or download";if(mediaStream){mediaStream.getTracks().forEach(t=>t.stop());mediaStream=null};recDownload.onclick=()=>{const a=document.createElement("a");a.href=blobUrl;a.download="things-that-go-plot-twist-story."+ext(type);document.body.appendChild(a);a.click();a.remove()}};mediaRecorder.start();recStop.disabled=false;if(canPause)recPause.disabled=false;recPlay.disabled=true;recDownload.disabled=true;}catch(e){recStatus.textContent="Microphone not available or permission denied.";recStart.disabled=false;}};
+recPause.onclick=()=>{if(!mediaRecorder)return;if(mediaRecorder.state==="recording"){mediaRecorder.pause();recPause.textContent="Resume"}else if(mediaRecorder.state==="paused"){mediaRecorder.resume();recPause.textContent="Pause"}};
+recStop.onclick=()=>{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop();recStart.disabled=false;recStop.disabled=true;if(canPause){recPause.disabled=true;recPause.textContent="Pause"}};
+recPlay.onclick=()=>{if(player.src)player.play()};
+</script>
+</body>
+</html>
