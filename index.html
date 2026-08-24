@@ -75,6 +75,22 @@
     #toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
     @media(min-width:720px){.slots{grid-template-columns:1fr 1fr 1.2fr} .slot{min-height:120px}}
     @media(min-width:860px){.plot-grid{grid-template-columns:1fr 1fr 1fr}}
+  
+    /* ---------- Shared Doodle Gallery ---------- */
+    .gallery-section{max-width:860px;margin:2rem auto 0;text-align:center}
+    .gallery-section h2{color:var(--teal);margin-bottom:.25rem}
+    .gallery-prompt-label{display:block;font-weight:700;margin-top:1rem;color:#53322b}
+    .gallery-prompt-input{width:min(520px,100%);padding:.85rem 1rem;border-radius:14px;border:2px dashed var(--yellow);font-family:'Poppins',sans-serif;margin:.5rem auto .75rem;display:block}
+    #gallery{display:flex;gap:10px;overflow-x:auto;padding:1rem 0;justify-content:flex-start}
+    #gallery img{cursor:pointer;-webkit-tap-highlight-color:transparent}
+    #imageLightbox{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;padding:24px;z-index:20000}
+    #imageLightbox.show{display:flex}
+    #lightboxContent{max-width:95vw;max-height:92vh;display:flex;flex-direction:column;align-items:center}
+    #imageLightbox img{max-width:95vw;max-height:78vh;object-fit:contain;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.35);transform:scale(.95);transition:transform .2s ease}
+    #imageLightbox.show img{transform:scale(1)}
+    #lightboxPrompt{margin-top:18px;color:white;font-size:1.15rem;font-weight:700;text-align:center;line-height:1.4;max-width:700px}
+    #lightboxClose{position:fixed;top:20px;right:22px;width:auto;height:auto;padding:0;margin:0;border:none;border-radius:0;background:transparent;color:white;font-size:42px;font-weight:700;line-height:1;cursor:pointer;box-shadow:none;z-index:20001}
+
   </style>
 </head>
 <body>
@@ -166,12 +182,42 @@
       <div class="fav-head"><h3>Doodle Favorites</h3><div><button class="btn secondary" id="doodleCopy">Copy All</button> <button class="btn secondary" id="doodleClear">Clear</button></div></div>
       <p class="muted" id="doodleEmpty">No favorites yet.</p><ul class="fav-list" id="doodleFavList"></ul>
     </div>
+
+    <section class="gallery-section">
+      <h2>The Doodle Gallery</h2>
+      <p class="muted">Doodles shared by families playing along.</p>
+
+      <label for="galleryDoodlePrompt" class="gallery-prompt-label">What prompt did you draw?</label>
+      <input id="galleryDoodlePrompt" class="gallery-prompt-input" type="text"
+        placeholder="Paste or type your doodle prompt" />
+
+      <div class="btns" style="margin-top:.25rem;">
+        <button class="btn secondary" id="useCurrentDoodlePrompt" type="button">Copy + Paste Current Prompt</button>
+        <button class="btn" id="upload_widget" type="button" disabled>Share Your Doodle!</button>
+      </div>
+
+      <p id="uploadHint" class="muted" style="text-align:center;margin-top:.25rem;">
+        Please add the prompt title before uploading your doodle.
+      </p>
+
+      <div id="gallery"></div>
+    </section>
   </section>
 
   <p class="footer">© 2026 Mia Wisinski, Playful Heart Parenting. For personal use only by purchasers. Please do not share without permission.</p>
 </div>
+
+<div id="imageLightbox" aria-hidden="true">
+  <button id="lightboxClose" type="button">×</button>
+  <div id="lightboxContent">
+    <img id="lightboxImage" src="" alt="">
+    <p id="lightboxPrompt"></p>
+  </div>
+</div>
+
 <div id="toast"></div>
 
+<script src="https://upload-widget.cloudinary.com/global/all.js"></script>
 <script>
 const DATA = {
   youare: [
@@ -612,6 +658,165 @@ recStart.onclick=async()=>{recStart.disabled=true;try{mediaStream=await navigato
 recPause.onclick=()=>{if(!mediaRecorder)return;if(mediaRecorder.state==="recording"){mediaRecorder.pause();recPause.textContent="Resume"}else if(mediaRecorder.state==="paused"){mediaRecorder.resume();recPause.textContent="Pause"}};
 recStop.onclick=()=>{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop();recStart.disabled=false;recStop.disabled=true;if(canPause){recPause.disabled=true;recPause.textContent="Pause"}};
 recPlay.onclick=()=>{if(player.src)player.play()};
+
+
+async function loadSharedDoodleGallery() {
+  try {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbwJ3SLtKpa_wSsXPoPR1z-VDaZks05pBN1dCF8HGU0yIkmFtibENVg2sEXe2ZceXW4p/exec");
+    const data = await res.json();
+    const gallery = document.getElementById("gallery");
+    if (!gallery) return;
+
+    gallery.innerHTML = "";
+
+    data.forEach(item => {
+      const card = document.createElement("div");
+      card.style.width = "160px";
+      card.style.flex = "0 0 auto";
+      card.style.textAlign = "center";
+
+      const img = document.createElement("img");
+      img.src = item.imageUrl;
+      img.alt = item.prompt || "Family doodle";
+      img.style.width = "140px";
+      img.style.height = "140px";
+      img.style.objectFit = "cover";
+      img.style.borderRadius = "16px";
+      img.style.boxShadow = "0 4px 12px rgba(0,0,0,.12)";
+
+      img.addEventListener("click", () => {
+        const lightbox = document.getElementById("imageLightbox");
+        const lightboxImage = document.getElementById("lightboxImage");
+        const lightboxPrompt = document.getElementById("lightboxPrompt");
+        if (!lightbox || !lightboxImage || !lightboxPrompt) return;
+        lightboxImage.src = item.imageUrl;
+        lightboxImage.alt = item.prompt || "";
+        lightboxPrompt.innerHTML = "<strong>Prompt:</strong> " + (item.prompt || "");
+        lightbox.classList.add("show");
+        lightbox.setAttribute("aria-hidden","false");
+      });
+
+      const caption = document.createElement("p");
+      caption.textContent = item.prompt || "";
+      caption.style.fontSize = ".78rem";
+      caption.style.lineHeight = "1.25";
+      caption.style.margin = ".4rem 0 0";
+      caption.style.color = "#53322b";
+
+      card.appendChild(img);
+      card.appendChild(caption);
+      gallery.appendChild(card);
+    });
+  } catch (error) {
+    console.log("Gallery could not load yet:", error);
+  }
+}
+
+function setupSharedDoodlePromptField() {
+  const promptInput = document.getElementById("galleryDoodlePrompt");
+  const uploadButton = document.getElementById("upload_widget");
+  const useCurrentButton = document.getElementById("useCurrentDoodlePrompt");
+  const uploadHint = document.getElementById("uploadHint");
+  if (!promptInput || !uploadButton) return;
+
+  function syncUploadButton() {
+    const hasPrompt = promptInput.value.trim().length > 0;
+    uploadButton.disabled = !hasPrompt;
+    if (uploadHint) {
+      uploadHint.textContent = hasPrompt
+        ? "Ready to upload your doodle!"
+        : "Please add the prompt title before uploading your doodle.";
+    }
+  }
+
+  promptInput.addEventListener("input", syncUploadButton);
+
+  if (useCurrentButton) {
+    useCurrentButton.addEventListener("click", () => {
+      const p = currentDoodle();
+      if (!p) {
+        toast("Shuffle a prompt first");
+        return;
+      }
+      promptInput.value = doodleText(p);
+      syncUploadButton();
+      toast("Prompt added");
+    });
+  }
+
+  syncUploadButton();
+}
+
+function setupSharedDoodleUploadWidget() {
+  const uploadButton = document.getElementById("upload_widget");
+  if (!uploadButton) return;
+  if (!window.cloudinary) {
+    console.log("Cloudinary widget did not load");
+    return;
+  }
+
+  const uploadWidget = cloudinary.createUploadWidget({
+    cloudName: "douw0mebw",
+    uploadPreset: "doodles",
+    tags: ["doodles"],
+    sources: ["local", "camera"],
+    multiple: false,
+    maxFiles: 1,
+    clientAllowedFormats: ["jpg", "jpeg", "png", "webp", "heic"],
+    maxFileSize: 20000000,
+    maxImageWidth: 1600,
+    maxImageHeight: 1600
+  }, (error, result) => {
+    if (error) {
+      console.log("Upload error:", error);
+      return;
+    }
+
+    if (result && result.event === "success") {
+      const promptInput = document.getElementById("galleryDoodlePrompt");
+
+      fetch("https://script.google.com/macros/s/AKfycbwJ3SLtKpa_wSsXPoPR1z-VDaZks05pBN1dCF8HGU0yIkmFtibENVg2sEXe2ZceXW4p/exec", {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({
+          prompt: promptInput ? promptInput.value.trim() : "",
+          imageUrl: result.info.secure_url
+        })
+      });
+
+      if (promptInput) promptInput.value = "";
+      setupSharedDoodlePromptField();
+      loadSharedDoodleGallery();
+      toast("Thanks for sharing your awesome doodle! It will appear in the gallery after a few minutes.");
+    }
+  });
+
+  uploadButton.addEventListener("click", () => uploadWidget.open());
+}
+
+function setupSharedDoodleLightbox() {
+  const lightbox = document.getElementById("imageLightbox");
+  const close = document.getElementById("lightboxClose");
+  if (!lightbox || !close) return;
+
+  close.addEventListener("click", () => {
+    lightbox.classList.remove("show");
+    lightbox.setAttribute("aria-hidden","true");
+  });
+
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      lightbox.classList.remove("show");
+      lightbox.setAttribute("aria-hidden","true");
+    }
+  });
+}
+
+loadSharedDoodleGallery();
+setupSharedDoodlePromptField();
+setupSharedDoodleUploadWidget();
+setupSharedDoodleLightbox();
+
 </script>
 </body>
 </html>
